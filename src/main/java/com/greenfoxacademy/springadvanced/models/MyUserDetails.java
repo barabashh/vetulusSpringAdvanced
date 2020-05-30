@@ -1,4 +1,4 @@
-package com.greenfoxacademy.springadvanced.services;
+package com.greenfoxacademy.springadvanced.models;
 
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
