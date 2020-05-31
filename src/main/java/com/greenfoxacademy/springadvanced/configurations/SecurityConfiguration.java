@@ -1,5 +1,6 @@
 package com.greenfoxacademy.springadvanced.configurations;
 
+import com.greenfoxacademy.springadvanced.filters.JwtRequestFilter;
 import com.greenfoxacademy.springadvanced.services.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,17 +9,22 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private MyUserDetailsService myUserDetailsService;
+  private JwtRequestFilter jwtRequestFilter;
 
   @Autowired
-  public SecurityConfiguration(MyUserDetailsService myUserDetailsService) {
+  public SecurityConfiguration(MyUserDetailsService myUserDetailsService,
+                               JwtRequestFilter jwtRequestFilter) {
     this.myUserDetailsService = myUserDetailsService;
+    this.jwtRequestFilter = jwtRequestFilter;
   }
 
   @Override
@@ -42,7 +48,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.csrf().disable()
         .authorizeRequests()
         .antMatchers("/authenticate").permitAll()
-        .anyRequest().authenticated();
+        .anyRequest().authenticated()
+        .and().sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 /*
     .antMatchers("/admin").hasRole("ADMIN")
         .antMatchers("/user").hasAnyRole("ADMIN","USER")
