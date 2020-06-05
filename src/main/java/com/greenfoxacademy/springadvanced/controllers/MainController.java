@@ -2,7 +2,6 @@ package com.greenfoxacademy.springadvanced.controllers;
 
 import com.greenfoxacademy.springadvanced.models.AuthenticationRequest;
 import com.greenfoxacademy.springadvanced.models.AuthenticationResponse;
-import com.greenfoxacademy.springadvanced.services.MyUserDetailsService;
 import com.greenfoxacademy.springadvanced.utilities.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +25,7 @@ public class MainController {
 
   @Autowired
   public MainController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
-                        @Qualifier("myUserDetailsService") UserDetailsService userDetailsService) {
+                        @Qualifier("userPrincipal") UserDetailsService userDetailsService) {
     this.authenticationManager = authenticationManager;
     this.userDetailsService = userDetailsService;
     this.jwtUtil = jwtUtil;

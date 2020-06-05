@@ -1,7 +1,7 @@
 package com.greenfoxacademy.springadvanced.configurations;
 
 import com.greenfoxacademy.springadvanced.filters.JwtRequestFilter;
-import com.greenfoxacademy.springadvanced.services.MyUserDetailsService;
+import com.greenfoxacademy.springadvanced.services.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,19 +17,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-  private MyUserDetailsService myUserDetailsService;
+  private UserPrincipal userPrincipal;
   private JwtRequestFilter jwtRequestFilter;
 
   @Autowired
-  public SecurityConfiguration(MyUserDetailsService myUserDetailsService,
+  public SecurityConfiguration(UserPrincipal userPrincipal,
                                JwtRequestFilter jwtRequestFilter) {
-    this.myUserDetailsService = myUserDetailsService;
+    this.userPrincipal = userPrincipal;
     this.jwtRequestFilter = jwtRequestFilter;
   }
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(myUserDetailsService);
+    auth.userDetailsService(userPrincipal);
   }
 
   @Override

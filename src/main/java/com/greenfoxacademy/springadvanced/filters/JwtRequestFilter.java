@@ -1,6 +1,6 @@
 package com.greenfoxacademy.springadvanced.filters;
 
-import com.greenfoxacademy.springadvanced.services.MyUserDetailsService;
+import com.greenfoxacademy.springadvanced.services.UserPrincipal;
 import com.greenfoxacademy.springadvanced.utilities.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,12 +19,12 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-  private MyUserDetailsService userDetailsService;
+  private UserPrincipal userPrincipal;
   private JwtUtil jwtUtil;
 
   @Autowired
-  public JwtRequestFilter(MyUserDetailsService userDetailsService, JwtUtil jwtUtil) {
-    this.userDetailsService = userDetailsService;
+  public JwtRequestFilter(UserPrincipal userPrincipal, JwtUtil jwtUtil) {
+    this.userPrincipal = userPrincipal;
     this.jwtUtil = jwtUtil;
   }
 
@@ -45,9 +45,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-      UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+      //UserDetails userDetails = this.userPrincipal.loadUserByUsername(username);
+      UserDetails userDetails = jwtUtil.createUserPrincipalFromToken(jwt);
 
-      if (jwtUtil.validateToken(jwt, userDetails)) {
+      if (jwtUtil.validateToken(jwt)) {
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
             userDetails, null, userDetails.getAuthorities());
